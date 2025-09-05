@@ -1,11 +1,100 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Satori Kyoto Project</title>
+  <style>
+    /* --- ベース --- */
+    :root { --bg:#0b0b0b; --fg:#f5f5f5; }
+    html,body{height:100%;margin:0}
+    body{
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+    .hero{
+      position:relative;
+      width:100%;
+      height:100%;
+    }
+    /* テキスト */
+    .copy{
+      position:absolute; inset:0;
+      display:grid; place-items:center;
+      text-align:center; line-height:1.9;
+      font-size: clamp(18px, 2.4vw, 28px);
+      padding: 6vh 6vw;
+      text-shadow: 0 1px 2px rgba(0,0,0,.35);
+    }
+    .copy p{margin:.35em 0}
+    /* 画面が縦長のときは少し下げる */
+    @media (max-aspect-ratio:3/4){
+      .copy{ padding-top:14vh; }
+    }
+  </style>
 </head>
 <body>
-  <h1>初公開テスト！</h1>
-  <p>これは Netlify 経由で表示されています。</p>
+  <div class="hero" aria-label="Hero with brush-stroke background">
+    <!-- 画像ファイル不要：SVGだけで“毛筆”を描画 -->
+    <svg viewBox="0 0 1600 900" width="100%" height="100%" preserveAspectRatio="xMidYMid slice"
+         style="position:absolute; inset:0; display:block;">
+      <defs>
+        <!-- 墨のかすれ感：ノイズ＋ディスプレイス -->
+        <filter id="ink">
+          <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="7" result="n"/>
+          <feGaussianBlur in="n" stdDeviation="0.6" result="g"/>
+          <feDisplacementMap in="SourceGraphic" in2="g" scale="18" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <!-- 筆の“繊維”っぽい端のギザギザ用ブラシ -->
+        <linearGradient id="stroke" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+          <stop offset=".08" stop-color="#ffffff" />
+          <stop offset=".92" stop-color="#ffffff" />
+          <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+        </linearGradient>
+        <mask id="fray">
+          <!-- 毛羽立ち：細い線を多数重ねて“かすれ”マスクを作る -->
+          <g fill="white">
+            <rect x="0" y="0" width="1600" height="900" fill="black"/>
+            <g opacity="0.92">
+              <!-- 細ストロークをランダム気味に敷く -->
+              <rect x="0" y="0" width="1600" height="140" transform="translate(0,150) skewY(-5)" fill="white"/>
+              <rect x="0" y="0" width="1600" height="80"  transform="translate(0,235) skewY(-5) rotate(-1 800 200)" fill="white" />
+              <rect x="0" y="0" width="1600" height="34"  transform="translate(0,208) skewY(-5)" fill="white" />
+            </g>
+          </g>
+        </mask>
+      </defs>
+
+      <!-- 背景（炭黒） -->
+      <rect x="0" y="0" width="1600" height="900" fill="#0b0b0b"/>
+
+      <!-- 左上段：横に流れる毛筆（太→細のニュアンス） -->
+      <g filter="url(#ink)" opacity="0.98">
+        <!-- 下地の大きい帯 -->
+        <path d="M -50,200 C 250,140 600,180 950,165 S 1650,195 1750,150
+                 L 1750,330 L -50,330 Z"
+              fill="url(#stroke)" mask="url(#fray)"/>
+        <!-- 二本目の薄い帯（重ねて立体感） -->
+        <path d="M -50,250 C 320,220 730,235 1090,225 S 1650,245 1750,210
+                 L 1750,268 L -50,268 Z"
+              fill="url(#stroke)" opacity=".65" mask="url(#fray)"/>
+      </g>
+    </svg>
+
+    <!-- Hero Copy（ここを書き換え） -->
+    <div class="copy" role="heading" aria-level="1">
+      <div>
+        <p>京町家の梁の下、</p>
+        <p>静けさがアリアのように歌う。</p>
+        <p>— 一つの音 ー 木の呼吸、</p>
+        <p>空間に静けさが宿り、魂へと響く。</p>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
